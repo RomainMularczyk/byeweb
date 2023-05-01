@@ -1,0 +1,14 @@
+# Misc
+.DS_Store
+
+# Editor
+.vscode/
+
+# Secrets
+*.env*
+
+# Dependencies
+*node_modules/
+
+# Builds
+dist/
