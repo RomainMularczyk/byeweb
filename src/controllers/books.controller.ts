@@ -26,7 +26,6 @@ export class BooksController {
         data: book,
       });
     } catch (err: any) {
-      console.log(err);
       return res.status(404).json({
         status: 404,
         message: err.message,
