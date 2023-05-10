@@ -14,9 +14,8 @@ export class BooksService {
   static async getBooks(): Promise<Book[]> {
     try {
       const dbResponse = await prisma.book.findMany({
-        include: { authors: true },
+        include: { authors: true, category: true },
       });
-      console.log(dbResponse);
       return dbResponse;
     } catch (err) {
       throw new DatabaseError();
@@ -46,6 +45,7 @@ export class BooksService {
           data: book,
           include: {
             authors: true,
+            category: true,
           },
         });
         return dbResponse;
