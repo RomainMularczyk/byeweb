@@ -18,13 +18,41 @@ model Author {
 }
 
 model Book {
-  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  id              String    @id @default(auto()) @map("_id") @db.ObjectId
   title           String
   publisher       String
   publicationDate DateTime
   language        String
   pages           Int
-  isbn            Int
-  authorsIds      String[] @db.ObjectId
-  authors         Author[] @relation(fields: [authorsIds], references: [id])
+  isbn            String
+  coverImage      String
+  progression     Int?      @default(0)
+  authorsIds      String[]  @db.ObjectId
+  authors         Author[]  @relation(fields: [authorsIds], references: [id])
+  category        Category? @relation(fields: [categoryId], references: [id])
+  categoryId      String?   @db.ObjectId
+}
+
+model Article {
+  id              String    @id @default(auto()) @map("_id") @db.ObjectId
+  title           String
+  tags            Tag[]
+  fulltext        String
+  publicationDate DateTime
+  category        Category? @relation(fields: [categoryId], references: [id])
+  categoryId      String?   @db.ObjectId
+}
+
+model Category {
+  id      String    @id @default(auto()) @map("_id") @db.ObjectId
+  type    String
+  Book    Book[]
+  Article Article[]
+}
+
+model Tag {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  Article   Article? @relation(fields: [articleId], references: [id])
+  articleId String?  @db.ObjectId
 }
