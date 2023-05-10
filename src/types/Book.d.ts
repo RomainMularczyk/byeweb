@@ -7,5 +7,8 @@ export type Book = {
   publicationDate: Date;
   language: string;
   pages: number;
-  isbn: number;
+  isbn: string;
+  coverImage: string;
+  progress?: number;
+  category?: Category;
 };
