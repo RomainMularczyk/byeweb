@@ -1,4 +1,11 @@
+import { Prisma } from '@client/prisma'
 import type { Author } from './Author.d';
+
+export const bookWithAuthorsAndCategories = Prisma.validator<Prisma.BookArgs>()({
+  include: { authors: true, categories: true }
+})
+
+export type BookWithAuthorsAndCategories = Prisma.BookGetPayload<typeof bookWithAuthorsAndCategories>
 
 export type Book = {
   title: string;
@@ -11,4 +18,4 @@ export type Book = {
   coverImage: string;
   progress?: number;
   category?: Category;
-};
+}

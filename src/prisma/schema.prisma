@@ -24,7 +24,7 @@ model Book {
   publicationDate DateTime
   language        String
   pages           Int
-  isbn            String
+  isbn            String    @unique
   coverImage      String
   progression     Int?      @default(0)
   authorsIds      String[]  @db.ObjectId
@@ -35,7 +35,7 @@ model Book {
 
 model Article {
   id              String    @id @default(auto()) @map("_id") @db.ObjectId
-  title           String
+  title           String    @unique
   tags            Tag[]
   fulltext        String
   publicationDate DateTime
@@ -56,3 +56,10 @@ model Tag {
   Article   Article? @relation(fields: [articleId], references: [id])
   articleId String?  @db.ObjectId
 }
+
+model User {
+    id       String @id @default(auto()) @map("_id") @db.ObjectId
+    email    String @unique
+    password String
+}
+

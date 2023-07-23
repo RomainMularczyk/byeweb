@@ -1,7 +1,7 @@
-import prisma from '../database';
-import DatabaseError from '../errors/database.error';
-import DataFormatError from '../errors/dataformat.error';
-import { Book } from '../types/Book';
+import prisma from '../database'
+import DatabaseError from '../errors/database.error'
+import DataFormatError from '../errors/dataformat.error'
+import type { Book, BookWithAuthorsAndCategories } from '../types/Book'
 
 export class BooksService {
   /**
@@ -11,14 +11,14 @@ export class BooksService {
    * @throws {DatabaseError} If the database could not respond.
    * @returns {Book[]} List of books.
    */
-  static async getBooks(): Promise<Book[]> {
+  static async getBooks(): Promise<BookWithAuthorsAndCategories> {
     try {
       const dbResponse = await prisma.book.findMany({
         include: { authors: true, category: true },
-      });
-      return dbResponse;
+      })
+      return dbResponse
     } catch (err) {
-      throw new DatabaseError();
+      throw new DatabaseError()
     }
   }
 
@@ -31,15 +31,22 @@ export class BooksService {
    * validated or if the database could not respond.
    * @returns {Book} The created book.
    */
-  static async postBook(body: Book): Promise<Book> {
-    try {
+  static async postBook(body: Book): Promise<BookWithAuthorsAndCategories> {
+    const existingBook = await prisma.book.findFirst({
+      where: { isbn: body.isbn },
+    })
+
+    if (existingBook) {
+      throw new DatabaseError('This book already exist in the database.')
+    } else {
       const book = {
         ...body,
         publicationDate: new Date(body.publicationDate),
         authors: {
           create: body.authors,
         },
-      };
+      }
+
       try {
         const dbResponse = await prisma.book.create({
           data: book,
@@ -47,13 +54,11 @@ export class BooksService {
             authors: true,
             category: true,
           },
-        });
-        return dbResponse;
+        })
+        return dbResponse
       } catch (err) {
-        throw new DatabaseError();
+        throw new DatabaseError()
       }
-    } catch (err) {
-      throw new DataFormatError();
     }
   }
 }
